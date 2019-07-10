@@ -10,15 +10,14 @@
  * Do not edit the class manually.
  */
 
-package io.swagger.client.model
+package model
 import play.api.libs.json._
 
-case class Member (
-                  username: Option[String],
-                  link: Option[Link]
+case class ListOfUsers (
+                  usernames: Option[Seq[Member]]
 )
 
-object Member {
-implicit val format: Format[Member] = Json.format
+object ListOfUsers {
+implicit val format: Format[ListOfUsers] = Json.format
 }
 
