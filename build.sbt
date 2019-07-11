@@ -5,6 +5,7 @@ name := "unichat-server"
 organization := "io.swagger"
 
 scalaVersion in ThisBuild:= "2.11.8"
+lagomServiceGatewayImpl in ThisBuild := "akka-http"
 
 val playJsonDerivedCodecs = "org.julienrf" %% "play-json-derived-codecs" % "3.3"
 val macwire = "com.softwaremill.macwire" %% "macros" % "2.3.0" % "provided"
@@ -24,6 +25,7 @@ lazy val `member-impl` = (project in file("member-impl"))
   .enablePlugins(LagomScala)
   .settings(
     libraryDependencies ++= Seq(
+      lagomScaladslCluster,
       lagomScaladslPersistenceCassandra,
       lagomScaladslKafkaBroker,
       lagomScaladslTestKit,
@@ -50,3 +52,4 @@ lazy val `member-stream-impl` = (project in file("member-stream-impl"))
     )
   )
   .dependsOn(`member-stream-api`, `member-api`)
+

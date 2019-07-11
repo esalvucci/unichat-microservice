@@ -1,10 +1,10 @@
-import com.lightbend.lagom.scaladsl.persistence.{EventStreamElement, PersistentEntityRegistry}
-import com.lightbend.lagom.scaladsl.api.ServiceCall
 import akka.{Done, NotUsed}
 import api.MemberInChatRoomApi
+import com.lightbend.lagom.scaladsl.api.ServiceCall
+import com.lightbend.lagom.scaladsl.persistence.PersistentEntityRegistry
 import model.{ListOfMemberInChatRoom, MemberInChatRoom}
 
-class MemberInChatRoomService(persistentEntityRegistry: PersistentEntityRegistry) extends MemberInChatRoomApi {
+class ChatRoomService(persistentEntityRegistry: PersistentEntityRegistry) extends MemberInChatRoomApi {
   /**
     * Add a user to a particular chat room
     *
@@ -12,10 +12,9 @@ class MemberInChatRoomService(persistentEntityRegistry: PersistentEntityRegistry
     * @return ListOfMemberInChatRoom Body Parameter  The username to be added.
     */
   override def addUserInChatRoom(chatRoomName: String): ServiceCall[MemberInChatRoom, ListOfMemberInChatRoom] = ServiceCall {request: MemberInChatRoom =>
-    val ref = persistentEntityRegistry.refFor[MemberInChatRoomEntity](chatRoomName)
-    ref.ask(AddMemberInChatRoomCommand(MemberInChatRoom(request.chatroom, request.username, request.link)))
+    val ref = persistentEntityRegistry.refFor[ChatRoomEntity](chatRoomName)
+    ref.ask(AddMemberInChatRoomCommand(MemberInChatRoom(request.username, request.link)))
   }
-
 
   /**
     * Delete a particular user of a particular chat room
