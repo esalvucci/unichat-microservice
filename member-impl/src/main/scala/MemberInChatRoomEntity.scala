@@ -8,8 +8,8 @@ import play.api.libs.json.{Format, Json}
 import scala.collection.immutable.Seq
 
 class MemberInChatRoomEntity extends PersistentEntity {
-  override type Command = MemberInChatRoomCommand[_]
-  override type Event = MemberInChatRoomEvent
+  override type Command = MemberInChatRoomCommand
+  override type Event = ChatRoomEvent
   override type State = ChatRoomState
 
   override def initialState: ChatRoomState = ChatRoomState(List.empty)
@@ -18,7 +18,7 @@ class MemberInChatRoomEntity extends PersistentEntity {
     case ChatRoomState(members) => Actions()
       .onCommand[AddMemberInChatRoomCommand, ListOfMemberInChatRoom] {
       case (AddMemberInChatRoomCommand(member), context, _) =>
-        context.thenPersist(AddedMemberInChatRoomEvent(member)) {_ =>
+        context.thenPersist(AddedMemberInChatRoomEvent(member)) {event =>
           context.reply(ListOfMemberInChatRoom(Some(members)))
         }
     }.onEvent {
@@ -31,20 +31,21 @@ class MemberInChatRoomEntity extends PersistentEntity {
     implicit val format: Format[ChatRoomState] = Json.format[ChatRoomState]
   }
 
-  sealed trait MemberInChatRoomEvent extends AggregateEvent[MemberInChatRoomEvent] {
-    def aggregateTag: AggregateEventTag[MemberInChatRoomEvent] = MemberInChatRoomEvent.Tag
-  }
-  object MemberInChatRoomEvent {
-    val Tag: AggregateEventTag[MemberInChatRoomEvent] = AggregateEventTag[MemberInChatRoomEvent]
-  }
-
-  sealed trait MemberInChatRoomCommand[R] extends ReplyType[R]
-  final case class AddMemberInChatRoomCommand(member: MemberInChatRoom) extends MemberInChatRoomCommand[Done]
+  sealed trait MemberInChatRoomCommand extends ReplyType[ListOfMemberInChatRoom]
+  final case class AddMemberInChatRoomCommand(member: MemberInChatRoom) extends MemberInChatRoomCommand
 
   object MemberInChatRoomSerializerRegistry extends JsonSerializerRegistry {
     override def serializers: Seq[JsonSerializer[_]] = Seq(JsonSerializer[ChatRoomState])
   }
 
-  case class AddedMemberInChatRoomEvent(member: MemberInChatRoom)
+  sealed trait ChatRoomEvent extends AggregateEvent[ChatRoomEvent] {
+    def aggregateTag: AggregateEventTag[ChatRoomEvent] = ChatRoomEvent.Tag
+  }
+  object ChatRoomEvent {
+    val Tag: AggregateEventTag[ChatRoomEvent] = AggregateEventTag[ChatRoomEvent]
+  }
+
+  final case class AddedMemberInChatRoomEvent(member: MemberInChatRoom) extends ChatRoomEvent
+  final case class MemberInChatRoomEvent(member: MemberInChatRoom) extends ChatRoomEvent
 
 }
