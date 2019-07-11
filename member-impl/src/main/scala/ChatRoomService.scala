@@ -24,5 +24,8 @@ class ChatRoomService(persistentEntityRegistry: PersistentEntityRegistry) extend
     * @param username     The chat room user&#39;s identifier (i.e. the identifier of the corresponding user)
     * @return void
     */
-  override def removeUserFromChatRoom(chatRoomName: String, username: String): ServiceCall[NotUsed, Done] = ???
+  override def removeUserFromChatRoom(chatRoomName: String, username: String): ServiceCall[NotUsed, Done] = ServiceCall {_ =>
+    val ref = persistentEntityRegistry.refFor[ChatRoomEntity](chatRoomName)
+    ref.ask(RemoveMemberFromChatRoomCommand(username))
+  }
 }
