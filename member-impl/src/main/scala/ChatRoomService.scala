@@ -2,16 +2,19 @@ import akka.{Done, NotUsed}
 import api.MemberInChatRoomApi
 import com.lightbend.lagom.scaladsl.api.ServiceCall
 import com.lightbend.lagom.scaladsl.persistence.PersistentEntityRegistry
-import model.{ListOfMemberInChatRoom, MemberInChatRoom}
+import model.MemberInChatRoom
+
+import scala.collection.immutable.Seq
 
 class ChatRoomService(persistentEntityRegistry: PersistentEntityRegistry) extends MemberInChatRoomApi {
   /**
     * Add a user to a particular chat room
+    * Add a user to a particular chat room.
     *
     * @param chatRoomName The chat room name
-    * @return ListOfMemberInChatRoom Body Parameter  The username to be added.
+    * @return Seq[MemberInChatRoom] Body Parameter  The username to be added.
     */
-  override def addUserInChatRoom(chatRoomName: String): ServiceCall[MemberInChatRoom, ListOfMemberInChatRoom] = ServiceCall {request: MemberInChatRoom =>
+  override def addUserInChatRoom(chatRoomName: String): ServiceCall[MemberInChatRoom, scala.Seq[MemberInChatRoom]] = ServiceCall { request: MemberInChatRoom =>
     val ref = persistentEntityRegistry.refFor[ChatRoomEntity](chatRoomName)
     ref.ask(AddMemberInChatRoomCommand(MemberInChatRoom(request.username, request.link)))
   }

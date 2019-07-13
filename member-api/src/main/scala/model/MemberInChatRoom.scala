@@ -15,7 +15,7 @@ import play.api.libs.json._
 
 case class MemberInChatRoom (
                   username: Option[String],
-                  link: Option[Link]
+                  link: Option[String]
 )
 
 object MemberInChatRoom {

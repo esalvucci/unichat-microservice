@@ -15,7 +15,10 @@ package api
 import akka.{Done, NotUsed}
 import com.lightbend.lagom.scaladsl.api.transport.Method
 import com.lightbend.lagom.scaladsl.api.{Service, ServiceCall}
-import model.{ListOfMemberInChatRoom, MemberInChatRoom}
+import play.api.libs.json._
+import com.lightbend.lagom.scaladsl.api.deser.PathParamSerializer
+
+import model.MemberInChatRoom
 
 trait MemberInChatRoomApi extends Service {
 
@@ -23,7 +26,7 @@ trait MemberInChatRoomApi extends Service {
   final override def descriptor = {
     import Service._
     named("MemberInChatRoomApi").withCalls(
-      restCall(Method.PUT, "/rooms/:chatRoomName/user", addUserInChatRoom _),
+      restCall(Method.PUT, "/rooms/:chatRoomName/user", addUserInChatRoom _), 
       restCall(Method.DELETE, "/rooms/:chatRoomName/:username", removeUserFromChatRoom _)
     ).withAutoAcl(true)
   }
@@ -34,9 +37,9 @@ trait MemberInChatRoomApi extends Service {
     * Add a user to a particular chat room. 
     *  
     * @param chatRoomName The chat room name  
-    * @return ListOfMemberInChatRoom Body Parameter  The username to be added.  
+    * @return Seq[MemberInChatRoom] Body Parameter  The username to be added.  
     */
-  def addUserInChatRoom(chatRoomName: String): ServiceCall[MemberInChatRoom ,ListOfMemberInChatRoom]
+  def addUserInChatRoom(chatRoomName: String): ServiceCall[MemberInChatRoom ,Seq[MemberInChatRoom]]
   
   /**
     * Delete a particular user of a particular chat room

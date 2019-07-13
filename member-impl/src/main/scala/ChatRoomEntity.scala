@@ -2,7 +2,7 @@ import akka.Done
 import com.lightbend.lagom.scaladsl.persistence.PersistentEntity.ReplyType
 import com.lightbend.lagom.scaladsl.persistence.{AggregateEvent, AggregateEventTag, PersistentEntity}
 import com.lightbend.lagom.scaladsl.playjson.{JsonSerializer, JsonSerializerRegistry}
-import model.{ListOfMemberInChatRoom, MemberInChatRoom}
+import model.MemberInChatRoom
 import play.api.libs.json.{Format, Json}
 
 import scala.collection.immutable.Seq
@@ -16,10 +16,11 @@ class ChatRoomEntity extends PersistentEntity {
 
   override def behavior: Behavior = {
     case ChatRoomState(members) => Actions()
-      .onCommand[AddMemberInChatRoomCommand, ListOfMemberInChatRoom] {
+      .onCommand[AddMemberInChatRoomCommand, Seq[MemberInChatRoom]] {
       case (AddMemberInChatRoomCommand(member), context, _) =>
+        println(member)
         context.thenPersist(AddedMemberInChatRoomEvent(member)) { event =>
-          context.reply(ListOfMemberInChatRoom(Some(members)))
+          context.reply(members)
         }
     }.onCommand[RemoveMemberFromChatRoomCommand, Done] {
       case (RemoveMemberFromChatRoomCommand(username), context, _) =>
@@ -40,7 +41,7 @@ object ChatRoomState {
 }
 
 sealed trait ChatRoomCommand[R] extends ReplyType[R]
-final case class AddMemberInChatRoomCommand(member: MemberInChatRoom) extends ChatRoomCommand[ListOfMemberInChatRoom]
+final case class AddMemberInChatRoomCommand(member: MemberInChatRoom) extends ChatRoomCommand[Seq[MemberInChatRoom]]
 final case class RemoveMemberFromChatRoomCommand(username: String) extends ChatRoomCommand[Done]
 
 object ChatRoomSerializerRegistry extends JsonSerializerRegistry {
