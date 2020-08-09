@@ -4,12 +4,9 @@ import com.lightbend.lagom.scaladsl.api.ServiceCall
 import com.lightbend.lagom.scaladsl.persistence.PersistentEntityRegistry
 import model.MemberInChatRoom
 
-import scala.collection.immutable.Seq
-
 class ChatRoomService(persistentEntityRegistry: PersistentEntityRegistry) extends MemberInChatRoomApi {
   /**
-    * Add a user to a particular chat room
-    * Add a user to a particular chat room.
+    * Add a user to a specific chat room.
     *
     * @param chatRoomName The chat room name
     * @return Seq[MemberInChatRoom] Body Parameter  The username to be added.
@@ -20,8 +17,7 @@ class ChatRoomService(persistentEntityRegistry: PersistentEntityRegistry) extend
   }
 
   /**
-    * Delete a particular user of a particular chat room
-    * Delete a particular member of a particular chat room.
+    * Delete a specific member of a particular chat room.
     *
     * @param chatRoomName The chat room name
     * @param username     The chat room user&#39;s identifier (i.e. the identifier of the corresponding user)

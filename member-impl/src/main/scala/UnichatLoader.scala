@@ -34,6 +34,6 @@ abstract class UnichatApplication(context: LagomApplicationContext)
   // Register the JSON serializer registry
   override lazy val jsonSerializerRegistry: JsonSerializerRegistry = ChatRoomSerializerRegistry
 
-  // Register the unichat-server persistent entity
+  // Register the unichat-microservice persistent entity
   persistentEntityRegistry.register(wire[ChatRoomEntity])
 }

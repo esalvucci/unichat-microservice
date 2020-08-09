@@ -28,7 +28,10 @@ class ChatRoomEntity extends PersistentEntity {
           context.reply(Done)
         }
     }.onEvent {
-      case (AddedMemberInChatRoomEvent(member), state) => ChatRoomState(member :: state.members)
+      case (AddedMemberInChatRoomEvent(member), state) => {
+        println("members " + state.members)
+        ChatRoomState(member :: state.members)
+      }
       case (RemovedMemberFromChatRoomEvent(username), state) => ChatRoomState(
         state.members.filterNot(user => user.username.get == username))
     }
